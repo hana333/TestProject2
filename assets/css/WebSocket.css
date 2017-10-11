@@ -1,0 +1,173 @@
+@charset "utf-8";
+/* CSS Document */
+/*与服务器连接失败样式*/
+	.Link_error .romli{
+		border:1px solid #ccc !important;
+	}
+	.Link_error .romhead{
+		background-color:#ccc !important;
+	}
+	.Link_error .romClassContent .romli .room_num .label-diy{
+		background-color:#ccc !important;	
+		padding-top:3px;			
+	}
+	.Link_error .romClassContent .romli .room_num .label-diy.arrowed-in:before{
+		border-color:#ccc !important;
+		border-left-color: transparent !important;	
+		left: -10px;
+	}
+	.Link_error .romClassContent .romli .room_num .label-diy.arrowed-in-right:after{	
+		border-color:#ccc !important;	
+		border-right-color: transparent !important;
+		right: -10px;
+	}
+	.Link_error .Infotxt{
+		border-color:#ccc !important;
+		color:#ccc !important;	
+	}
+	.Link_error .romClassbottom li{
+		background-color:#ccc !important;
+	}
+	.Link_error .romClassbottom .air_pz{
+		background-color:#ccc !important;	
+	}
+	.Link_error .romClassbottom .air_dz{
+		background-color:#ccc !important;	
+	}
+	.Link_error .romClassbottom .zzfw{
+		background-color:#ccc !important;	
+	}
+	.Link_error .do{
+		background-color:#ccc !important;
+		animation:none;
+	}
+	.Link_error .do .air_div .air_dz{
+		background-color:#ccc !important;
+	}
+	.Link_error .do .air_div .air_pz{
+		background-color:#ccc !important;
+	}
+	.Link_error .do .air_div .zzfw{
+		background-color:#ccc !important;
+	}
+	.Link_error .Dueue_name{
+		background-color:#ccc !important;
+	}
+	.Link_error .btn-blue{
+		background-color:#ccc !important;
+		border-color:#ccc !important;
+	}
+	.Link_error .serachtxt{
+		background-color:#ccc !important;
+	}
+	.Link_error .romClassContent .romli .sy_bg a{
+		color:#ccc !important;			
+	}
+	.Link_error .romClassContent .romli .sy_bg a span{
+		background-color:#ccc !important;
+	}
+	.Link_error .romClassContent .romli .ds,
+	.Link_error .romClassContent .romli .dw{
+		background-color:#ccc !important;	
+	}
+	.Link_error .romClassContent .romli .room_num .label-diy{
+		display:none;
+	}
+	.Link_error .romClassContent .ghinfo li{
+		background-color:#ccc !important;
+	}
+	.Link_error .romClassbottom .lunbo .Pause,
+	.Link_error .romClassbottom .lunbo .Pause .air_div>span{
+		background-color:#ccc !important;
+	}
+	.Link_error .romClassbottom .lunbo .Booking,
+	.Link_error .romClassbottom .lunbo .Booking .air_div>span{
+		background-color:#ccc !important;
+	}
+	.Link_error .romClassbottom .lunbo .do,
+	.Link_error .romClassbottom .lunbo .do .air_div>span{
+		background-color:#ccc !important;
+	}
+	
+	/*提示消息框*/
+	.web_link .web_bg{
+	    top: 0;
+		bottom: 0;
+		left: 0;
+		right: 0;
+		background-color: rgba(0,0,0,0.1);
+		width: 100%;
+		z-index: 1025;
+		position: fixed;	
+	}
+	.web_link .web_content{
+		width: 300px;
+		height: 158px;
+		background-color: #fff;
+		position: absolute;
+		z-index: 1100;
+		top: -185px;
+		bottom: 0;
+		margin: auto;
+		left: 0;
+		right: 0;
+		border-radius: 5px;
+		box-shadow: 0px 6px 30px rgba(0,0,0,0.1);
+	}
+	.web_link .unlinkicon{
+		color: #FF6633;
+		font-size: 49px;
+		position: absolute;
+		left: 41px;
+		top: 40px;
+	}
+	.web_link .unlink_txt{
+		font-size: 16px;
+		text-align: center;
+		font-weight: 600;
+		display: block;
+		padding: 7px 0px;
+		margin-left: 50px;
+	}
+	.web_link .unlink_top{
+		margin-top:40px;	
+	}
+	.web_link .lg-spin-icon{
+		color: #FF6633;
+		font-size: 45px;
+		position: absolute;
+		left: 0;
+		right: 0;
+		text-align: center;
+		line-height: 115px;
+	}
+	.web_link .lg-success-icon,
+	.web_link .lg-Falied-icon{
+		color: #33CC33;
+		font-size: 54px;
+		position: absolute;
+		left: 0;
+		right: 0;
+		text-align: center;
+		line-height: 115px;
+	}
+	.web_link .lg-Falied-icon{
+		color: red !important;
+	}
+	.web_link .Page_txt{
+		line-height: 213px;
+		font-size: 18px;
+		text-align: center;
+		left: 0;
+		right: 0;
+		position: absolute;
+		font-weight: 600;
+	}	
+	.air_icon_loding{
+		font-size: 19px;
+   		display: block;
+    	margin-top: 0px;
+	}
+	
+		
+	

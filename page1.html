@@ -1,0 +1,1293 @@
+页面一
+<script>
+	$(function(){
+	getInfo();  //个人信息查询	
+	chaone();	//查询题型
+	operation();	//答案与解析
+	index3();	
+	jiaoshow();		//选择学科年级
+	
+	//滚动事件
+	$(window).scroll(function(){
+		var top = $(window).scrollTop();
+		var winHei = $(window).height();
+		var scrollBottom = $(document).height() - winHei - top;
+		if(top>=140){
+			$('.down_list').addClass('fixed');
+		}else{
+			$('.down_list').removeClass('fixed');			
+		}
+		//左侧文件夹跟随滚动
+		if($('.style_tiku.active').length > 0 && top>=290){
+			$('.cont_left,.cont_right').addClass('fixed');
+		}else if(($('.style_tiji.active').length > 0 || $('.style_selfSC.active').length > 0 ) && top>=245){
+			$('.cont_left,.cont_right').addClass('fixed');
+		}else{
+			$('.cont_left,.cont_right').removeClass('fixed');
+		}
+		
+		//文件夹长度过长
+		if(scrollBottom < 100){
+			$('#nav,.chapter_Name').css('max-height',winHei - 255).addClass('scroll');
+		}else{
+			$('#nav,.chapter_Name').css('max-height','').removeClass('scroll');
+		}
+		
+	});
+	
+	//单选切换
+	$('.down_style .down_li').on('click',function(){
+		$(this).addClass('active').siblings().removeClass('active');
+		var id = $(this).data('id');
+		var value = $(this).data('value');
+		if(id == 3 && value == 'schoolTiJi'){	//选择学校题集
+			getTiJi();  //题集文件夹目录查询	
+			folderQuery(1);   //初始化返回所有题目显示
+			$('.no-q-add').hide();
+			$('.cont_left,.contentTop').show();
+			$('.cont_right').removeClass('act');	
+			$('.addque').hide().text('录入题目');
+		}else if(id == 3 && value == 'gongTiJi'){	//选择公共题集
+			
+		}/*else if(id == 4){		//待审核题目
+			//当隐藏左边栏，右边栏全屏
+			$('.cont_left,.contentTop').hide();
+			$('.cont_right').addClass('act');
+			reviewTopic(1);		//查询待审核题目
+		}*/else{
+			$('.cont_left,.contentTop').show();
+			$('.cont_right').removeClass('act');	
+			$('.addque').hide().text('录入题目');		
+		}
+	}); 
+	//题库
+	$('.style_tiku').on('click',function(){
+		$('.select_list').show();
+		getKnowage();	//知识点查询
+		
+		$(this).addClass('active').siblings().removeClass('active');
+		$('.content').removeClass('no_width');
+		$('.nav').removeClass('no_height');
+		//$('.addque').show().text('录入题目');
+		$('.addque').hide();
+		getCommon(1);
+	});
+	$('.down_cont dl').on('click','dd',function(){
+		$(this).addClass('active').siblings().removeClass('active');
+		var value = $(this).data('value');
+		$(this).parents('li').data('value',value);
+	});
+	//题型、难易程度切换
+	$('.list_choose ul').on('click','li',function(){
+		$(this).addClass('active').siblings().removeClass('active');
+		var leng=$('.style_tiku.active').length;
+		var lengB=$('.style_selfSC.active').length;
+		if(leng > 0){
+			getCommon(1);	//题库
+		}else if(lengB > 0){
+			getPer(1);	//个人收藏
+		}else{
+			folderQuery(1);	//题集
+		}	
+	});
+	//适用年级，年级选择
+	$('.list_checkbox').on('click','li',function(){
+		$(this).toggleClass('active');
+	});
+
+	//多选勾选年级选择
+	$('.list_checkbox').on('click','li',function(){
+		var i,id,leng,arr=new Array();
+		var act = $('.list_checkbox li.active');
+		act.each(function(){
+			id = $(this).data('id');
+			arr.push(id);
+		});
+		if(act.length > 0){
+			console.log(110);
+			getCommon(1,arr.join(','));
+		}else{
+			console.log(11);
+			getCommon(1,-1);
+		}
+	});
+	
+	//排序
+	$('.contentTop').on('click','.menu_li',function(){
+		$(this).toggleClass('active').siblings().removeClass('active');	
+		$(this).addClass('sorting').siblings().removeClass('sorting');	
+		var leng = $('.li_new.active').length;
+		var lengB = $('.li_coll.active').length;
+		var lengC = $('.li_diff.active').length;
+		if($(this).hasClass('li_new') && leng > 0){
+			$('.li_new').data('id',2);
+		}else if($(this).hasClass('li_new') && leng == 0){
+			$('.li_new').data('id',1);
+		}else if($(this).hasClass('li_coll') && lengB > 0){
+			$('.li_coll').data('id',3);
+		}else if($(this).hasClass('li_coll') && lengB == 0){
+			$('.li_coll').data('id',4);
+		}else if($(this).hasClass('li_diff') && lengC > 0){
+			$('.li_diff').data('id',5);
+		}else if($(this).hasClass('li_diff') && lengC == 0){
+			$('.li_diff').data('id',6);
+		}
+		getCommon(1);
+	});
+	
+	//切换题库题集
+	$('.down_cont dd').on('click',function(){
+		$(this).addClass('active').siblings().removeClass('active');
+		$(this).parents('li').find('a').html($(this).text());
+	});
+	//切换年级学科
+	$('#leftsidebar,.class_img').on('click',function(){
+		$('.down_menu').toggleClass('active');
+	});
+	$('.down_class').on('click','.gradeClass li',function(){
+		$('.down_menu').toggleClass('active');
+		$('#gradeName').html($(this).text());
+	});
+	//选择科目
+	$('.subjectUl').on('click','li',function(){
+		$(this).addClass('active').siblings().removeClass('active');
+		$('#subjectName').html($(this).text());
+	});
+	
+	//点击跳转审核页面
+	$('#review').on('click',function(){
+		window.location.href = "review.html";
+	})
+	//点击个人信息页面
+	$('#infoSelf').on('click',function(){
+		window.location.href = "infoSelf.html";
+	})
+	
+	//显示答案与解析
+	$('.contentTop').on('click','.answer_li',function(){
+		$(this).toggleClass('active');
+		if($('.answer_li.active').length > 0){
+			$('#queAll .ques-ans').show();
+		}else{
+			$('#queAll .ques-ans').hide();
+		}
+	});
+
+	//收藏
+	$('#queAll').on('click','.shouc',function(){
+		var queid,opl,op;
+		var This = $(this);
+		queid = $(this).parents('.que').data('questionid');
+		$('.que-questionId').html(queid);
+		opl = $(this).text();
+		if(opl=='收藏'){
+			$.MyModal({
+				title: '收藏目录',
+				Name: 'collegeMenu',
+				content: 'collegeMenu.html',
+				width: "550px",
+				footer: false,
+				onOk:function(){
+					//gongChaXun();
+					$(this).parents('.modal').fadeOut().remove();
+				},
+				onFinsh: function() {
+				}
+			});
+		}else if(opl=='已收藏'){
+			$.ajax({
+			    type:'post',
+			    url:"../web/qb/collectQuestions",
+			    dataType: "json",
+			    data:{
+			    	questionId:queid,
+					op:0,
+					syn:0,
+					catalogId:$('.catalogId').html()
+			    },
+			    success:function(res){
+			    	$('.que-subjectId').html(0);
+			    	This.html('<i class="aali lishouc"></i>收藏');
+			    },
+			    error:function(res) {
+			    	console.log(res.msg)
+			    }
+			});
+		}
+	})
+	
+	//回到顶部
+	$('.scrollDiv').on('click',function(){
+		$('body').animate({scrollTop:0},500);
+	});		
+
+	//退出提示
+	$('.admin-out').on('click',function(){
+		$.msgBox({
+			title:'是否退出',	
+			content:'是否退出',
+			onOk:function(){
+				$.removeCookie('Miz-seven' ,'', { expires: -1 });
+				$.removeCookie('Miz-holdings', '', { expires: -1 });
+				$.removeCookie('Miz-holdings-psd', '', { expires: -1 });
+				$.removeCookie('Miz-one', '', { expires: -1 });
+				self.location='login.html';
+			}
+		});
+	});
+	
+	//增加文件夹
+	$('.cont_left').on('click','.add_folder',function(e){
+		if($(this).hasClass('addFolderLi')){
+			$(this).addClass('foldchild');
+		}
+		var Ths = $(this);
+		$.MyModal({
+			title: '新建文件夹',
+			Name: 'addFolder',
+			content: 'addFolder.html',
+			width: "550px",
+			/*width:'800px',*/
+			footer: true,
+			onOk:function(){
+				var catalogName = $('#folderName').val().replace(/&/g,"&amp").replace(/</g,"&lt").replace(/>/g,"&gt");
+				var flag = Ths.hasClass('addFolderLi');
+				if(flag){
+					pid = Ths.siblings('.chapter_in').data('id');
+				}else{
+					pid = -1;
+				}
+				if(catalogName.length > 0 && catalogName.match(/^[^\s'"&]+$/)){
+					$.ajax({
+					    type:'post',
+					    url:"../web/qb/addQuestionSet",
+					    dataType: "json",
+					    data:{
+					    	pid:pid,
+					    	catalogName:catalogName,
+						    ownerType:2
+					    },
+					    success:function(res){
+							$('.modal').fadeOut().remove();
+							if(res.result == -1){
+						    	var cont = res.msg;
+						    	newPrompt(cont);
+							}else{
+								//手动添加文件夹目录
+								var cName = Ths.parent('.chapName');
+							    var len = cName.find('ul').length;
+							    var flag = Ths.hasClass('addFolderLi');
+							    var cont = '<li class="chapName chapter_close">\
+										<i class="chapter-on"></i>\
+										<span class="chapter_in go'+res.data.id+' chapterCanChose" title="'+res.data.name+'" data-id="'+res.data.id+'">\
+										<span class="nochapterin"></span>\
+										'+res.data.name+'</span>\
+										<span class="add_folder addFolderLi"><i></i></span>\
+									</li>';
+								if(Ths.hasClass('add_top')){
+									//一级菜单
+									$('.chapter_Name').append(cont);
+									TiJi();		//题集菜单点击
+								}else if(flag && len >= 0){
+									//二三级菜单
+									var leng = cName.find('ul').length;
+									if(leng > 0){
+										//有同级
+										cName.find('ul:eq(0)').append(cont);
+										TiJi();		//题集菜单点击
+									}else{
+										//没有同级
+										Ths.siblings('.chapter_in').find('span').removeClass('nochapterin').addClass('chapterClose');
+										cName.append('<ul class="chapterName">'+cont+'</ul>');
+										TiJi();		//题集菜单点击
+									}
+									/*var subjectNameCont = $('#subjectName').text();
+									if(subjectNameCont == '数学'){
+										$('.chapter_Name>li>ul>li>ul>li>ul>li').find('.addFolderLi').remove();
+									}else{*/
+										$('.chapter_Name>li>ul>li>ul>li').find('.addFolderLi').remove();
+									//}
+								}
+								$('.addque,.right_top1,.no-q-add').hide();
+							}
+					    },
+					    error:function(res) {
+					    	var cont = res.msg;
+					    	newPrompt(cont);
+					    }
+					    
+					});
+				}else{
+					alert('文件夹名字不合规范');
+				}
+			},
+			onFinsh: function() {
+			}
+		});
+		return false;
+	});
+	
+	//修改学校题集名称
+	$('.contentTop').on('click','.sTiJiUpdata',function(){
+		var id = $('.chapter_in.active').data('id');
+		$.MyModal({
+			title: '修改文件夹名称',
+			Name: 'editFolder',
+			content: 'editFolder.html',
+			width: "550px",
+			footer: true,
+			onOk:function(){
+				var catalogName = $('#folderName').val().replace(/&/g,"&amp").replace(/</g,"&lt").replace(/>/g,"&gt");
+				if(catalogName.length > 0 && catalogName.match(/^[^\s'"&]+$/)){
+					$.ajax({
+					    type:'post',
+					    url:"../web/qb/updateQuestionSet",
+					    dataType: "json",
+					    data:{
+					    	catalogName:catalogName,
+					    	catalogId:id
+					    },
+					    success:function(res){
+					    	var resId = res.data.id;
+							$('.modal').fadeOut().remove();
+							var act = $('.chapter_in.active');
+					    	var spanCoin = act.children('span').attr('class');
+							act.data('id',resId);
+							act.attr('title',resId);
+							act.removeAttr('class').addClass('chapter_in go'+resId+' active');
+							var conta = '<span class="'+spanCoin+'"></span>'+res.data.name+'';
+							act.html(conta);
+							$('.addque,.no-q-add').hide();
+					    },
+					    error:function(res) {
+					    }
+					});
+				}else{
+					alert('文件件名称不合规范');
+				}
+			},
+			onFinsh: function() {
+			}
+		});
+	});
+	//删除学校题集名称
+	$('.contentTop').on('click','.sTiJiDel',function(){
+		var catalogId = $('.chapter_in.active').data('id');
+		var contentVal = '是否删除'+$.trim($('.chapter_in.active').text())+'文件夹';
+		$.ajax({
+		    type:'post',
+			url:'../web/qb/removeQuestionSet',
+			dataType: "json",
+			data:{
+				catalogId:catalogId
+			},
+			success:function(res){
+				if(res.result != 0){
+					var cont = res.msg;
+					newPrompt(cont);
+				}else{
+					$.msgBox({
+						title:contentVal,
+						content:contentVal,
+						onOk:function(){
+							var chaAct = $('.chapter_in.active').parent('.chapName');
+							var len = chaAct.siblings('li').length;
+							if(res.result == 0){
+								if(len > 0){
+									chaAct.remove();
+								}else{
+									chaAct.parent('ul').siblings('.chapter_in').find('span').removeClass('chapterClose').addClass('nochapterin');
+									chaAct.parent('ul').remove();
+								}
+								$('.addque,.right_top1,.no-q-add').hide();
+							}
+							var cont = res.msg;
+							newPrompt(cont);
+						}
+					});
+					
+				}
+			},
+			error:function(res){
+				var cont = res.msg;
+				newPrompt(cont);
+			}
+		});
+	});	
+	
+	//选择知识点
+	$('.cont_left').on('click','.chooseKnowledge',function(){
+		$(this).removeClass('top_CC').addClass('top_CK');
+		$(this).siblings().removeClass('top_CK').addClass('top_CC');
+		getKnowage();	//获取知识点树
+	});
+	//选择章节
+	$('.cont_left').on('click','.chooseChapter',function(){
+		$(this).removeClass('top_CC').addClass('top_CK');
+		$(this).siblings().removeClass('top_CK').addClass('top_CC');
+		getChapter();	//获取章节树
+	});
+	
+});
+
+var contLeft = '<div class="menu_top">\
+					<span class="chooseKnowledge top_CK">选择知识点</span>\
+					<span class="chooseChapter top_CC">选择章节</span>\
+				</div>\
+				<div class="knowlageInner">\
+					<ul id="nav-gong" class="knowlage_Name"></ul>\
+				</div>';
+var contRig = '<div class="right_top">\
+					<ul>\
+						<li>排序：</li>\
+						<li class="menu_li li_new" data-id="1"><label>最新</label></li>\
+						<li class="menu_li li_coll" data-id="3"><label>收藏次数 </label></li>\
+						<li class="menu_li li_diff" data-id="5"><label>试题难度 </label></li>\
+						<li class="answer_li"><label><i class="seven_log seven_login"></i>显示答案与解析</label></li>\
+					</ul>\
+				</div>';
+
+var contLeft1 = '<div class="menu_top1">\
+					自定义分组\
+					<span class="add_nav">\
+					<i></i>新建文件夹</span>\
+				</div>\
+				<div class="personInner">\
+					<ul id="nav"> </ul>\
+				</div>';
+var contRig1 = '<div class="right_top1">\
+					<span class="delMenu toMenu">删除文件夹</span>\
+					<i></i>\
+					<span class="updataMenu toMenu">修改文件夹名</span>\
+				</div>';
+
+
+//点击文件夹查询题目
+function folderQuery(page){
+	var id;
+	var len = $('.chapter_in.active').length; 
+	if(len>0){
+		id = $('.chapter_in.active').data('id');
+	}else{
+		id = -1;
+	}
+	$.ajax({
+	    type:'post', 
+	    url:"../web/qb/queryQuestionSetByCatalogIds",
+	    data:{
+	    	page:page,
+	    	pageSize:10,
+	    	catalogIds:id,
+	    	ownerType:2,
+	    	diff:$('#diff ul li.active').data('value'),
+	    	qyId:$('#topicType ul li.active').data('value')
+	    },
+	    success:function(res){
+	    	$('.answer_li').removeClass('active');
+	    	$('.select_list:eq(2)').hide();
+	    	var Sch;
+	    	if(localStorage.roletype!='10'&&localStorage.roletype!='20'){
+	    		Sch = 'sch'
+	    	}
+	    	topicCont(res,page,10,Sch);	//生成题目
+	    },
+	    error:function(res){
+	    	console.log(res);
+	    }
+	});
+}
+
+//个人信息查询
+function getInfo(){
+	$.ajax({
+	    type:'post', 
+	    url:"../web/qb/userInfor",
+	    dataType: "json",	   
+	    async: false,
+	    success:function(res){
+	    	var pasId = res.data.phaseId;
+	    	$('.list_checkbox ul').empty();
+	    	if(pasId == 1){
+	    		var con = '<li data-id="1" class="active"><label><i class="seven_log seven_login"></i>一年级</label></li>\
+	    			<li data-id="2" class="active"><i class="seven_log seven_login"></i>二年级</label></li>\
+	    			<li data-id="3" class="active"><i class="seven_log seven_login"></i>三年级</label></li>\
+	    			<li data-id="4" class="active"><i class="seven_log seven_login"></i>四年级</label></li>\
+	    			<li data-id="5" class="active"><i class="seven_log seven_login"></i>五年级</label></li>\
+	    			<li data-id="6" class="active"><i class="seven_log seven_login"></i>六年级</label></li>';
+		    	$('.list_checkbox ul').append(con);
+	    	}else if(pasId == 2){
+	    		var con = '<li data-id="7" class="active"><i class="seven_log seven_login"></i>七年级</label></li>\
+	    			<li data-id="8" class="active"><i class="seven_log seven_login"></i>八年级</label></li>\
+	    			<li data-id="9" class="active"><i class="seven_log seven_login"></i>九年级</label></li>';
+		    	$('.list_checkbox  ul').append(con);	    	    		
+	    	}else if(pasId == 3){
+	    		var con = '<li data-id="10" class="active"><label><i class="seven_log seven_login"></i>高一</label></li>\
+	    			<li data-id="11" class="active"><i class="seven_log seven_login"></i>高二</label></li>\
+	    			<li data-id="12" class="active"><i class="seven_log seven_login"></i>高三</label></li>';
+		    	$('.list_checkbox ul').append(con);	    	    		
+	    	}
+	    	$('#leftsidebar').empty();
+	    	var contT = '当前：<i id="subjectName" data-id="'+res.data.subjectId+'">'+res.data.subjectName+'</i><i id="gradeName" data-id="'+res.data.gradeId+'">'+res.data.gradeName+'</i>';
+	    	$('#leftsidebar').append(contT);
+	    	$('#usname,.rigName').html(res.data.name);
+	    	$('#username').val(res.data.name);
+    		$("#gradeId").html(res.data.gradeId);
+    		//判断是否在审题组
+    		if(res.data.isCheckMember == 1){
+    			$('.oldTopic').remove();
+    		}
+    		localStorage.roletype =res.data.roleType;
+	    	//判断是否为管理员
+	    	if(res.data.roleType=="10" || res.data.roleType=="20"){		//超管或管理员
+	    		$(".bench-top .news").addClass('chooseNews');
+	    		$('.style_selfSC,.style_shen,.style_look').show();
+		    	//消息number
+				var num = res.data.count;
+				$('.miz-new-num').html(num);
+				if(res.data.roleType=="10"){	//超级管理员
+		    		var contentA = '<span>V</span>超级管理员';
+		    		$('.textAdmin').html(contentA);
+				}else{
+		    		var contentB = '<span>V</span>管理员';
+		    		$('.textAdmin').html(contentB);					
+				}
+	    	}else if(res.data.roleType=='40'){	//录入员
+	    		$('.style_tiku,.style_selfSC,#review').remove();
+	    		$('.down_style ul li').show();
+	    		$('.style_shen,.style_look').show();
+	    		$('.style_tiji').addClass('active');
+	    		getTiJi();
+	    		folderQuery(1);
+	    	}else{		//普通用户
+	    		$(".bench-top .news").removeClass('chooseNews');
+	    		$('.removeTeacher').remove();
+	    		$('.style_shen,.style_look').remove();
+	    		$('.style_selfSC').show();
+	    		var contentC = '<span>V</span>普通用户';
+	    		$('.textAdmin').html(contentC);
+	    	}
+	    	//判断申请学校状态
+	    	var span = $('#schoolSpan');
+	    	var twoId = res.data.toSchoolId;
+	    	var refuseId = res.data.refusedSchoolId;
+	    	if(res.data.result=="0"){	//待审核
+	    		span.removeClass('chooseSchool');
+	    		span.text(res.data.schoolName+"(待审核)");
+    			$('.remReview').remove();
+	    		$('.schoolInp').after('<span class="remReview"> &nbsp;取消审核</span>');
+	    		$('.getsearchjson').attr('disabled',true);
+	    		$('.getsearchjson').val('').attr('placeholder','学校待审核中');
+	    		$('.tiKuShow').remove();		//学校题库移除
+	    		$('.style_tiji').remove();		//学校题集移除
+	    	}else if(res.data.result=="-1"){	//没选学校
+	    		span.addClass('chooseSchool');
+	    		span.text('还未选择学校');
+	    		$('.tiKuShow').remove();		//学校题库移除
+	    		$('.style_tiji').remove();		//学校题集移除
+	    	}else if(res.data.result=="2"){		//被拒绝
+	    		span.addClass('chooseSchool');
+	    		span.text(res.data.schoolName+"(审核被拒绝,请重新选择学校)");
+	    		$('.tiKuShow').remove();		//学校题库移除
+	    		$('.style_tiji').remove();		//学校题集移除
+	    	}else{		//审核通过，可再次操作选学校
+	    		if(twoId){
+	    			span.text(res.data.toSchoolName+"(待审核)");
+	    			$('.remReview').remove();
+		    		$('.schoolInp').after('<span class="remReview"> &nbsp;取消审核</span>');
+		    		$('.getsearchjson').attr('disabled',true);
+		    		$('.getsearchjson').val('').attr('placeholder','学校待审核中');
+	    		}else if(refuseId){
+	    			span.html(res.data.refusedSchoolName+"(审核被拒绝,请重新选择学校)");
+	    			setTimeout(function(){
+		    			span.text(res.data.schoolName);
+		    		},3000);
+	    		}else{		//审核通过
+		    		span.text(res.data.schoolName);
+	    		}
+	    	}
+	    	$("#subjectId").html(res.data.subjectId);
+	    	$("#jiaocaiId").html(res.data.gradeId);
+	    	if(res.data.gradeId=='0'&&!res.data.subjectId&&!res.data.gradeId){
+	    		$('#gradeName').html('默认');
+	    		$('#subjectName').html('');
+	    	}
+	    },
+	    error:function(res) {
+	    	self.location='login.html';
+	    }
+	});
+	if($('.style_tiji.active').length <= 0){
+		getKnowage();
+	}
+}
+
+//信息提示
+function newPrompt(cont){
+	$('.false-bg').css('display','block');
+	$('.false').css('display','block').html(cont);
+	setTimeout(function(){
+		$('.false-bg').css('display','none');
+		$('.false').css('display','none');
+	},3000)
+}
+
+//回到顶部
+$(window).scroll(function(){
+	var height = $(window).height();
+	var scrollHeight = $(window).scrollTop();
+	if(height < scrollHeight){
+		$('.scrollDiv').show();
+	}else{
+		$('.scrollDiv').hide();
+	}
+});
+
+//获取题型
+function chaone(){
+	//题型查询
+	$.ajax({
+	    type:'post', 
+	    url:"../web/qb/queryQuestionTypeList",
+	    dataType: "json",
+	    success:function(res){
+	    	$('#topicType ul').empty();
+	    	var aa = '<li class="active"  data-id="" value="">全部</li>';
+	    	for(var i = 0;i<res.data.length;i++){
+	    		aa += '<li  data-id="'+res.data[i].questionType+'" data-value="'+res.data[i].qyId+'">'+res.data[i].typeName+'</li>'
+	    	}
+    		$('#topicType ul').append(aa);
+	    },
+	    error:function(res) {
+	    	self.location='login.html';
+	    }
+	});	
+}
+
+
+//公共题库展示
+function getCommon(page,gradeid){
+	$('.loading').show();
+	var value = $('.down_style li.active').data('value');
+	var id = $('.down_style li.active').data('id');
+	var Tiku,Sch;
+	if(value == 'gongTiKu' && id == 1){
+		Tiku = 'common';
+		$('.addque').hide();
+	}else if(value == 'schoolTiKu' && id == 1){
+		Tiku = 'school';
+		//$('.addque').show();
+		$('.addque,.no-q-add').hide();
+	}
+	if(localStorage.roletype!='10'&&localStorage.roletype!='20'){
+		Sch = 'sch'
+	}
+	var flag = $('.chooseChapter').hasClass('top_CK');
+	var url;
+	if(flag){
+		url="../web/qb/queryQuestionBySection";	//章节查询公共题库
+	}else{
+		url="../web/qb/queryQuestions";	//知识点查询公共题库		
+	}
+	$.ajax({
+	    type:'post', 
+	    url:url,
+	    dataType: "json",
+	    data:{
+	    	catalogId:$('#catalogidgong').html(),//知识点ID
+	    	diff:$('#diff ul li.active').data('value'),
+	    	qyId:$('#topicType ul li.active').data('value'),
+	    	page: page,
+	    	pageSize:10,
+	    	rankId:$('.sorting').data('id'),
+	    	gradeId:gradeid,
+	    	org:Tiku
+	    },
+	    success:function(res){
+	    	$('.answer_li').removeClass('active');
+	    	topicCont(res,page,value,Sch);	//生成题目
+	    },
+	    error:function(res) {
+	    	console.log(res.msg)
+	    }
+	});
+}
+
+//题目内容
+function topicCont(res,page,value,Sch){
+	$('.que').remove();
+	$('.loading').hide();
+	$(".paging").empty();
+	var que = "";
+	var a =1;
+	if(res.result!="-1"){
+		if(!res.data){
+			$('.no-que').show();
+		}else if(res.data.list!=''){
+			$('.que').remove();
+			$('.no-que').hide();
+			$('.no-que-sch').hide();
+			for(var i=0;i<res.data.list.length;i++){
+    			var type='';
+    			var dif='';
+    			var question='';
+    			var anssw = '';
+    			var shou = '';
+    			if(res.data.list[i].questionType=="1"){
+    				anssw= res.data.list[i].answer;
+    				var reg = new RegExp("`~`","g");
+    				anssw = res.data.list[i].answer.replace(reg,'&nbsp;&nbsp;&nbsp;&nbsp;');
+    			}else if(res.data.list[i].questionType=="2"){
+    				if(res.data.list[i].answer=='0'){
+    					anssw="错误"
+    				}else{
+    					anssw="正确"
+    				}
+    			}else if(res.data.list[i].questionType=="3"){
+    				anssw= res.data.list[i].answer;
+    			}else if(res.data.list[i].questionType=="4"){
+    				anssw= '<p>'+res.data.list[i].answer+'</p>';
+    			}else if(res.data.list[i].questionType=="5"){
+    				anssw= res.data.list[i].answer;
+    			}
+    			if(res.data.list[i].diff==""){
+    				dif = '';
+    			}else if(res.data.list[i].diff=="1"){
+    				dif = '简单';
+    			}else if(res.data.list[i].diff=="3"){
+    				dif = '较易';
+    			}else if(res.data.list[i].diff=="5"){
+    				dif = '一般';
+    			}else if(res.data.list[i].diff=="7"){
+    				dif = '较难';
+    			}else if(res.data.list[i].diff=="9"){
+    				dif = '困难';
+    			}
+    			var adup;
+    			if(value == 'gongTiKu'){
+    				if(res.data.list[i].collection=='0'){
+	    				shou = '收藏'
+	    			}else if(res.data.list[i].collection=='1'){
+	    				shou = '已收藏'
+	    			}
+    				adup = '<span class="shouc"><i class="aali lishouc"></i>'+shou+'</span>'
+    			}else{
+    				if(Sch=='sch'){
+    					adup = ''
+    				}else{
+    					adup = '<div class="delp"><i class="aali lidelp"></i>删除</div>'+
+    					'<div class="comp"><i class="aali licomp"></i>修改</div>'
+    				}
+    				
+    			}
+    			
+    			if(res.data.list[i].questionType=="4"){
+    				question = '<div class="que-an">'+res.data.list[i].question+'</div>' +
+    				'<div class="que-an"><p class="chosP">A:&nbsp;&nbsp;&nbsp;</p>'+res.data.list[i].optionA+'</div>'+
+    				'<div class="que-an"><p class="chosP">B:&nbsp;&nbsp;&nbsp;</p>'+res.data.list[i].optionB+'</div>'+
+    				'<div class="que-an"><p class="chosP">C:&nbsp;&nbsp;&nbsp;</p>'+res.data.list[i].optionC+'</div>'+
+    				'<div class="que-an"><p class="chosP">D:&nbsp;&nbsp;&nbsp;</p>'+res.data.list[i].optionD+'</div>'
+    			}else if(res.data.list[i].questionType=="5"){
+    				question = '<div class="que-an">'+res.data.list[i].question+'</div>' +
+    				'<div class="que-an"><p class="chosP">A:&nbsp;&nbsp;&nbsp;</p>'+res.data.list[i].optionA+'</div>'+
+    				'<div class="que-an"><p class="chosP">B:&nbsp;&nbsp;&nbsp;</p>'+res.data.list[i].optionB+'</div>'+
+    				'<div class="que-an"><p class="chosP">C:&nbsp;&nbsp;&nbsp;</p>'+res.data.list[i].optionC+'</div>'+
+    				'<div class="que-an"><p class="chosP">D:&nbsp;&nbsp;&nbsp;</p>'+res.data.list[i].optionD+'</div>'+
+    				'<div class="que-an"><p class="chosP">E:&nbsp;&nbsp;&nbsp;</p>'+res.data.list[i].optionE+'</div>'
+    			}else{
+    				question = '<div class="que-an">'+res.data.list[i].question+'</div>'
+    			}
+    			var quest = ''
+    			if(res.data.list[i].parse!=""){
+    				quest = 
+    					'<p class="ansP">【解析】</p>'+
+						'<div class="ques-answer">'+
+							res.data.list[i].parse+
+						'</div>'
+    			}
+    			var know=''
+				var k ='';
+				if(res.data.list[i].nodeList){
+						for(var j =0;j<res.data.list[i].nodeList.length;j++){
+							k += '<span class="kn">'+res.data.list[i].nodeList[j].name+'</span>'
+							
+						}
+						know = '<p class="ansP">【知识点】</p>'+
+						'<div class="ques-know"><p>'+k+
+						'</p></div>'
+					
+				}
+				var ch = '';
+				var chap = '';
+					if(res.data.list[i].quclist){
+						for(var j =0;j<res.data.list[i].quclist.length;j++){
+							ch += '<span class="kn">'+res.data.list[i].quclist[j].name+'</span>'
+							
+						}
+						chap = '<p class="ansP">【章节】</p>'+
+						'<div class="ques-know"><p>'+ch+
+						'</p></div>'
+					}
+				
+				$('.que-catalogId').html(res.data.list[i].catalogId);
+				var catalogId;
+				if(res.data.list[i].catalogId){
+					catalogId = res.data.list[i].catalogId;
+				}else{
+					catalogId = -1;
+				}
+				que += '<div class="que"  data-questionId="'+res.data.list[i].questionId+'" data-catalogId="'+catalogId+'">'+
+					'<div class="que-top top2">'+
+					'<div class="type">'+
+					'<span class="ti">题型：</span><span id="que-type" class="ti">'+res.data.list[i].typeName+
+					'</span><span class="ti" style="padding-left:35px;">难易程度：</span>'+dif+
+					'</div>'+
+					'<div class="operating">'+
+					adup+
+					'</div>'+
+					'</div>'+
+					'<div class="queAll">'+
+					'<div class="ques" >'+question+'</div>'+
+					'<div class="ques-ans" >'+
+						'<p class="ansP">【答案】</p>'+
+						'<div class="ques-an">'+anssw+'</div>'+
+						quest+
+						know+chap+'</div>'+
+				'</div></div>'+
+			'</div>'
+			    		
+	    	}
+			
+    		$('.paging').hide();
+    		$('#queAll').append(que);
+	    	getPage(res,page,value);
+		}else{
+			$('.que').remove();
+    		$('.no-que').show();
+    	}
+	}
+	$('.chosP').next('p').css('display','inline-block')
+}
+
+//学科年级一次性返回
+function jiaoshow(){
+	var dataJson ='';
+	var id;
+	id=$('#subjectName').attr('data-id');
+	$.ajax({
+		type:"post",
+		dataType:"json",
+		url:"../web/qb/querySubjectAndGradeList",
+		success:function(res){
+			dataJson = res;
+			fulldata(dataJson,id);
+			//修改学科年级
+			$('.subjectUl li').unbind("click");
+			$('.subjectUl').on('click','li',function(){
+				$('.gradeClass').show();
+				$(this).parents('.subjectClass').attr('data-id',$(this).attr('data-id'));
+				$('#subjectName').attr('data-id',$(this).attr('data-id'));
+				id = $(this).attr('data-id');
+				fulldata(dataJson,id);
+			})
+		},
+		error:function(res){
+			console.log(res);
+		}
+	});
+}
+//填充学科年级
+function fulldata(dataJson,id){
+	//返回学科,年级
+	var i,j,strT='';
+	var strB='';
+	var contT='',contB='';
+	$('.subjectUl ul').empty();
+	$('.gradeUl ul').empty();
+	var k = id-1;
+	for(i = 0;i<dataJson.data.length;i++){
+		strT = dataJson.data[i].name;
+		contT = '<li data-id="'+dataJson.data[i].id+'">'+strT+'</li>';
+		$('.subjectUl ul').append(contT);				
+	}
+	for(j = 0;j<dataJson.data[k].childList.length;j++){
+		strB=dataJson.data[k].childList[j].name;
+		contB = '<li data-id="'+dataJson.data[k].childList[j].id+'">'+strB+'</li>';
+		$('.gradeUl ul').append(contB);
+	}	
+	$('.subjectUl li[data-id="'+id+'"]').addClass('active').siblings().removeClass('active');
+	$('.gradeUl li').unbind("click");
+	$('.gradeUl li').click(function(){
+		$(this).parents('.gradeClass').attr('data-id',$(this).attr('data-id'));
+		$('#gradeName').attr('data-id',$(this).attr('data-id'));
+		$.ajax({
+		    type:'post', 
+		    url:"../web/qb/editUserInfo",
+		    dataType: "json",
+		    data:{
+		    	gradeId:$('.gradeClass').attr('data-id'),
+		    	subjectId:$('.subjectClass').attr('data-id')
+		    },
+		    success:function(res){
+		    	chaone();	//获取题型		    	
+	    		$('#catalogidgong').html('all');
+	    		$("#catalogid").html('all');
+	    		$("#catalogidscho").html('all');	    		
+	    		$(".down_style").find('li.active').trigger('click');
+		    },
+		    error:function(res) {
+		    	console.log(res.msg)
+		    }
+		});
+	});
+}
+
+//渲染知识点,获取知识点,学科,id
+function getKnowage(){
+    $('.cont_left').empty();
+	$('.contentTop').empty();
+	$('.cont_left').append(contLeft);
+	$('.contentTop').append(contRig);
+	var args=new Object();
+    var query=location.search.substring(1);//获取查询串  
+    var pairs=query.split(",");//在逗号处断开  
+    for(var i=0;i<pairs.length;i++){  
+        var pos=pairs[i].indexOf('=');//查找name=value
+        if(pos==-1){//如果没有找到就跳过  
+            continue;
+        }
+        var argname=pairs[i].substring(0,pos);//提取name
+        var value=pairs[i].substring(pos+1);//提取value
+        args[argname]=unescape(value);//存为属性  
+    }
+    $('#subjectName').attr('data-catalogid',args.catalogId);
+	//查询知识点
+	$.ajax({
+	    type:'post', 
+	    url:"../web/qb/queryKnowledgeList",
+	    dataType: "json",	   
+	    success:function(res){
+	    	$("#nav-gong").empty();
+	    	if(res.data!=''){
+	    		var i,rdata;
+	    		for (i = 0; i < res.data.length; i++) {
+					 rdata = res.data[i];
+					 knowlage(rdata);
+				}
+		    	cliknow();
+	    	} 
+	    	gongTiku();
+	    },
+	    error:function(res) {
+	    }
+	});
+	//题库选择
+	$.ajax({
+	    type:'post',
+	    url:"../web/qb/getCatalog",
+	    dataType: "json",	   
+	    success:function(res){
+	    	for(var i = 0;i<res.data.length;i++){
+	    		if(res.data[i].id==args.catalogId){
+	    			$('#subjectName').html(res.data[i].name);
+	    		}
+	    	}
+	    },
+	    error:function(res) {
+	    }
+	});
+	
+}
+function knowlage(data){	
+	if(data.childList){
+		if($('.knowlage_Name').children('li').length==0){
+			for(var i = 0;i< data.childList.length; i++){
+				 var childList = data.childList[i];
+				 $('.knowlage_Name').append(
+					'<li class="knowName know_close">'+
+						'<i class="know-on"></i>'+
+						
+						'<span class="knowlage_in go'+childList.id+'" title="'+childList.name+'" data-id="'+childList.id+'">'+
+						'<span class="knowlageClose"></span>'+
+							childList.name+	
+					'</span></li>');
+				 knowlage(data.childList[i])
+			}
+		}else{
+			for (var j = 0; j < data.childList.length; j++) {
+	            var childList = data.childList[j];
+	            var children = $(".go"+data.id).next("ul");
+	            if (children.length == 0) {
+	            	$(".go"+data.id).parent('.knowName').append("<ul class='knowlageName'></ul>")
+	            }
+	             $(".go"+data.id).next('ul').append(
+	            		 '<li class="knowName know_close">'+
+							'<i class="know-on"></i>'+
+							'<span class="knowlage_in go'+childList.id+'" title="'+childList.name+'" data-id="'+childList.id+'">'+
+							'<span class="knowlageClose"></span>'+childList.name+'</span></li>');
+	             
+	             knowlage(data.childList[j])
+	        }
+		}
+	}
+}
+function cliknow(){
+	 for(var i = 0;i<$('.knowName').length;i++){
+	    	if($('.knowName:eq('+i+')').children('ul').length==0){
+	    		$('.knowName:eq('+i+')').children('.knowlage_in').addClass('knowlageCanChose')
+	    		$('.knowName:eq('+i+')').find('.knowlage_in').children('span').removeClass('knowlageClose');
+	    		$('.knowName:eq('+i+')').find('.knowlage_in').children('span').addClass('noknowlagein');
+	        }
+	    }
+    
+    
+	$('.knowlage_in').click(function(){
+		var knowName=$(this).parent('.knowName');
+		if(knowName.hasClass('know_close')){
+			knowName.addClass('know_open').removeClass('know_close');
+		}else{
+			knowName.addClass('know_close').removeClass('know_open');
+		}
+	})
+}
+
+//查询章节树
+function getChapter(){
+	$.ajax({
+		type:"post",
+		url:"../web/qb/queryChaptersTree",
+	    dataType: "json",
+	    success:function(res){
+	    	$("#nav-gong").empty();
+	    	if(res.data!=''){
+	    		for (i = 0; i < res.data.length; i++) {
+					 var rdata = res.data[i];
+					 $('.knowlage_Name').append(
+						'<li class="knowName know_close">\
+							<i class="know-on"></i>\
+							<span class="knowlage_in go'+rdata.id+'" title="'+rdata.name+'" data-id="'+rdata.id+'">\
+							<span class="knowlageClose"></span>\
+								'+rdata.name+'\
+							</span>\
+							</li>');
+			    	knowlage(rdata);
+				}
+		    	cliknow();
+	    	} 
+	    	gongTiku();
+	    },
+	    error:function(res){
+	    	
+	    }
+	});
+}
+
+//答案与解析
+function operation(){
+	$('.cont_right').on('click','.queAll',function(){
+		var dis = $(this).find('.ques-ans').css('display');
+		if(dis=='none'){
+			$(this).find('.ques-ans').show();
+			$(this).find(".que-hid").html(2)
+		}else{
+			$(this).find('.ques-ans').hide();
+			$(this).find(".que-hid").html(1)
+		}
+	})
+}
+
+//公共题库开包闭包
+function gongTiku(){
+	$('.knowlage_in').unbind("click").click(function(){
+		var konwName = $(this).parent('.knowName');
+		if(!konwName.hasClass('na-on')){
+			konwName.removeClass('know_close').addClass('know_open');
+			konwName.siblings().removeClass('know_open').removeClass('na-on').addClass('know_close');
+			konwName.addClass('na-on');
+			$('.knowlage_in').removeClass('spanblue');
+			$(this).addClass('spanblue');
+			$('#catalogidgong').html($(this).attr("data-id"));
+			getCommon(1);
+		}else{
+			konwName.removeClass('know_open').addClass('know_close');
+			konwName.find('.knowName').removeClass('na-on').removeClass('know_open').addClass('know_close');
+			konwName.removeClass('na-on');
+			$('#catalogidgong').html($(this).attr("data-id"));
+			getCommon(1);
+		}
+	});
+	for(var i = 0;i<$(".knowlage_in").length;i++){
+		if($(".knowlage_in:eq("+i+")").next('ul').length==0){
+			$(".knowlage_in:eq("+i+")").find('i').removeClass('nav-close');
+			$(".knowlage_in:eq("+i+")").find('i').addClass('nav-nochild');
+		}
+	}
+}
+
+//学校题库目录查询
+function chadowschool(data){
+	if($('#nav-school').children('li').length==0){
+		for(var i = 0;i< data.childList.length; i++){
+			 var childList = data.childList[i];
+			 chadowschool(data.childList[i]);
+		}
+	}else{
+		for (var j = 0; j < data.childList.length; j++) {
+            var childList = data.childList[j];
+            var children = $(".sch"+data.id).parent(".knowName").find("ul");
+            if (children.length == 0) {
+            	$(".sch"+data.id).parent('.knowName').append("<ul></ul>");
+            } 
+             $(".sch"+data.id).next('ul').append(
+            		 '<li class="knowName know_close"><i class="dashed"></i>'+
+					 '<span>'+childList.name+'</span></span></li>');
+             chadowschool(data.childList[j])
+        }
+	}
+}
+
+//学校题集目录查询
+function getTiJi(){
+	$('.loading').show();
+	//查询题集
+	$.ajax({
+	    type:'post', 
+	    url:"../web/qb/queryQuestionSet",
+	    dataType: "json",
+	    async: false,
+	    data:{
+	    	ownerType:2
+	    },
+	    success:function(res){
+	    	$('.loading').hide();
+	    	//清空个人收藏
+	    	$('.cont_left').empty();
+	    	var cont = '<div class="menu_top1">\
+							自定义分组\
+							<span class="add_top add_folder">\
+							<i></i>新建文件夹</span>\
+						</div>\
+						<div class="chapter chapterName" id="chap-school">\
+							<ul class="chapter_Name"></ul>\
+						</div>';
+	    	$('.cont_left').append(cont);
+	    	$(".chapter_Name").empty();
+	    	if(res.data!=''){
+	    		for (i = 0; i < res.data.length; i++) {
+					 var rdata = res.data[i];
+					 $('.chapter_Name').append(
+						'<li class="chapName chapter_close">\
+							<i class="chapter-on"></i>\
+							<span class="chapter_in go'+rdata.id+'" title="'+rdata.name+'" data-id="'+rdata.id+'">\
+							<span class="chapterClose"></span>\
+								'+rdata.name+'\
+							</span>\
+							<span class="add_folder addFolderLi"><i></i></span>\
+						</li>');
+					 chapter(res.data[i]);
+				}
+	    		TiJi();  //点击文件夹事件	    		
+		    	var leng = $('#chap-school').find('.na-on').length;
+		    	if(leng == 0)$('.contentTop').empty();
+	    	} 
+	    },
+	    error:function(res) {
+	    	console.log(res);
+	    }
+	});
+}
+//生成题集文件夹层
+function chapter(child){
+	if(child.childList){
+		for (var j = 0; j < child.childList.length; j++) {
+            var childList = child.childList[j];
+            var children = $(".go"+child.id).nextAll("ul");
+            if (children.length == 0) {
+            	$(".go"+child.id).parent('.chapName').append("<ul class='chapterName'></ul>");
+            }
+            $(".go"+child.id).nextAll("ul").append(
+            		 '<li class="chapName chapter_close">\
+						<i class="chapter-on"></i>\
+						<span class="chapter_in go'+childList.id+'" title="'+childList.name+'" data-id="'+childList.id+'">\
+						<span class="chapterClose"></span>\
+						'+childList.name+'</span>\
+						<span class="add_folder addFolderLi"><i></i></span>\
+					</li>');
+             chapter(child.childList[j]);
+        }
+		/*var subjectNameCont = $('#subjectName').text();
+		if(subjectNameCont == '数学'){
+			$('.chapter_Name>li>ul>li>ul>li>ul>li').find('.addFolderLi').remove();
+		}else{*/
+			$('.chapter_Name>li>ul>li>ul>li').find('.addFolderLi').remove();
+//		}
+	}
+}
+
+
+//题集开包闭包
+function TiJi(){
+	for(var i = 0;i<$('.chapName').length;i++){
+	  	if($('.chapName:eq('+i+')').children('ul').length==0){
+	  		$('.chapName:eq('+i+')').children('.chapter_in').addClass('chapterCanChose')
+	  		$('.chapName:eq('+i+')').find('.chapter_in').children('span').removeClass('chapterClose');
+	  		$('.chapName:eq('+i+')').find('.chapter_in').children('span:eq(0)').addClass('nochapterin');
+	      }
+	  }
+	$('#chap-school .chapter_in').unbind("click");
+	$('#chap-school .chapter_in').click(function(){
+		var flag = $(this).hasClass('active');
+		var len =$(this).siblings('ul').length;
+		if(len==0){
+			$('.no-q-add,.addque').show();
+		}else{
+			$('.no-q-add,.addque').hide();
+		}
+		
+		var chapName = $(this).parent('.chapName');
+		$('.contentTop').empty();
+		var contRT = '<div class="right_top1">\
+						<span class="toMenu sTiJiDel">删除文件夹</span>\
+						<i></i>\
+						<span class="toMenu sTiJiUpdata">修改文件夹</span>\
+					</div>';
+		$('.contentTop').append(contRT);	
+		if(!chapName.hasClass('na-on')){
+			chapName.addClass('chapter_open').removeClass('chapter_close');
+			chapName.siblings().removeClass('chapter_open').removeClass('na-on').addClass('chapter_close');
+			$('.chapter_in').removeClass('active');
+			$(this).addClass('active');
+			folderQuery(1);
+		}else{
+			chapName.removeClass('chapter_open').addClass('chapter_close');
+			chapName.find('.chapName').removeClass('na-on').removeClass('chapter_open').addClass('chapter_close');
+			chapName.removeClass('na-on');
+			folderQuery(1);
+		}
+	});
+}
+
+//待审核题目
+function reviewTopic(page){
+	$.ajax({
+		type:"post",
+		url:"../web/qb/queryOperatorQuestions",
+		data:{
+			page:page,
+			pageSize:10
+		},
+		success:function(res){
+	    	$('.select_list:eq(2)').hide();
+			topicCont(res,page,40,'sch');
+			$('.no-q-add').hide();
+			if($('.que').length > 0){
+				$('.addque').show().text('审核题目');
+			}
+		},
+		error:function(res){
+			console.log(res);
+		}
+	});
+}
+
+</script>
+3480   z-index:1041;

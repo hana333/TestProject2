@@ -1,0 +1,216 @@
+<script type="text/javascript"
+	src="js/jquery.form.js"></script>
+<style>
+.group_top {
+    width: calc(100% - 30px);
+    height: 60px;
+    border-bottom: 1px solid #ddd;
+    padding: 10px;
+    background-color: #fff;
+    position: absolute;
+}
+.group_top .upfile {
+	width: 100px;
+	height: 35px;
+	background-color: #1B9AF7;
+	transition: all 0.4s;
+	color: #fff;
+	padding-top: 7px;
+	text-align: center;
+	float: left;
+	margin-right: 2px;
+}
+.group_top .upfile:hover {
+	text-decoration: none;
+	background-color: #4cb0f9;
+}
+.group_top .upfile input[type="file"] {
+	display: block;
+	width: 167px;
+	height: 35px;
+	opacity: 0;
+	margin-top: -25px;
+}
+.group_top label {
+	margin-left: 10px;
+}
+.group_top select {
+	width: 100px;
+	height: 35px;
+}
+.group_img {
+    width: calc(100% - 30px);
+    padding: 5px;
+    overflow-y: auto;
+    position: absolute;
+    top: 60px;
+    bottom: 0;
+}
+.group_img .imgs {
+    width: 24.5%;
+    height: 160px;
+    float: left;
+    margin: 0.25%;
+    margin-top: 12px;
+    transition: box-shadow 0.4s;
+    overflow: hidden;
+    position: relative;
+}
+.group_img imgs:hover {
+	box-shadow: 0px 15px 30px rgba(0,0,0,0.1);
+}
+.group_img img {
+	display: block;
+	width: 100%;
+	float: left;
+	border: 1px solid #ccc;
+	height: 160px;
+	cursor:pointer;
+}
+.sm-spin-icon {
+	color: #FF6633;
+	font-size: 25px;
+	margin: 0px 15px;
+	position: absolute;
+}
+.group_img .imgSelected {
+	outline: 2px solid #1B9AF7;
+}
+.group_img .imgSelected::before{
+	content: "\f00c";
+    display: inline-block;
+    font: normal normal normal 14px/1 FontAwesome;
+    font-size: inherit;
+    text-rendering: auto;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+	position: absolute;
+    top: 2px;
+    left: 2px;
+    z-index: 1;
+    color: #fff;
+}
+.group_img .imgSelected::after{
+	content:"";
+	display: block;
+	position: absolute;
+	top:0;
+	left:0;
+	width: 0;
+    height: 0;
+    border-top: 30px solid #1B9AF7;
+    border-right: 30px solid transparent;
+}
+#a1 {
+	background-color: #000000;
+}
+#a2 {
+	background-color: #ff0000;
+}
+#a3 {
+	background-color: #00ff00;
+}
+#a4 {
+	background-color: #0000ff;
+}
+</style>
+<div class="group_top">
+    <form id='formFile' enctype="multipart/form-data">
+	    <a href="javascript:" class="upfile"> 上传文件
+	    	<input type="file" name="file" class='imgfile'/>
+	    </a>
+	    <input id="subjection" type="text" name="subjection" value="" class='hide'/>
+    </form>
+</div>
+<div class="group_img"> </div>
+<script>
+	ajax_img('picture_save.html','');
+	function ajax_img(url,data,upload){
+		$.ajax({
+			url:url,
+			data:data,
+			type:'get', 				//数据发送方式 
+	        dataType:'json', 			//接受数据格式
+			async:true,					//异步请求
+			timeout: 5000,				//请求超时
+	        beforeSend:function() {		//请求完成前
+//		        $('.img-fl').after('<span class="sm-spin-icon"><i class="fa fa-spinner fa-spin"></i></span>');
+
+	        },
+	        complete:function(data) {	//请求完成后
+	        	$('.sm-spin-icon').fadeOut(500,function(){
+					$('.sm-spin-icon').remove();
+				});
+		    },
+	        success: function(data) {	//请求成功
+				if(upload){
+					imgOK(data);
+					return;
+				}
+				$('.group_img').empty();
+			
+				for(i=0;i<=data.picList.length-1;i++){
+					var list=data.picList[i];
+					var str='<div class="imgs"><img id="img" src="'+data.path+list.path+'" alt="' + list.title +'"></div>'
+						$('.group_img').append(str);
+					}
+	            },
+	        error: function(data) {		//请求失败
+				alert('图片上传失败，请重新选择图片');
+		    }
+		});
+	};		
+			
+	$('.group_top').on('change','.imgfile',function(){		//上传图片
+		var n=$('#subjection').val();
+		$('#formFile').ajaxSubmit({
+    		type: 'post', 
+   			url: 'picture_save.html',
+			beforeSend:function() {		//请求完成前
+  				 $('.img-fl').after('<span class="sm-spin-icon"><i class="fa fa-spinner fa-spin"></i></span>');
+  			}, 
+			complete:function(data) {	//请求完成后
+				$('.sm-spin-icon').fadeOut(500,function(){
+					$('.sm-spin-icon').remove();	
+				});
+  			},
+    		success: function(data) {						
+				  imgOK(data);
+    		},
+		});
+		return false; // 阻止表单自动提交事件s		
+    });	
+
+			
+	function imgOK(data){
+		var imgSrc="";
+		if(data != null){
+			str='<div class="imgs imgSelected"><img src="'+data.content+'" alt="aa"><div class="ok"><i class="fa fa-check"></i></div></div>';
+			$('.group_img').find('.imgSelected').removeClass('imgSelected');
+			if($('.group_img').has('.imgs').length>0){
+				$('.imgs:first').before($(str));
+			}else
+			{
+				$('.group_img').append($(str));
+			}
+
+			alert('图片上传成功');
+			return;
+		}
+		else{
+			var obj=$('.group_img').find('.imgSelected');
+			if(obj.length>0){
+				imgSrc=obj.children('img').attr('src');
+			}
+			else{
+				alert('至少选择一张图片');
+				return;
+			}
+		}
+		$('#photo').fadeOut(200,function(){			
+			$('#photo').remove();
+		});	
+		return imgSrc;	
+	};
+	
+</script>

@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			.container {
+			    position: relative;
+			    max-width: 600px;
+			    height: 500px;
+			    text-align: center;
+			    overflow: hidden;
+		        background: #000;
+			}
+			#load {
+			    position: relative;
+			    color: #333;
+			    margin: 0px auto;
+			    width: 100%;
+			}
+			.border1 {
+			    position: relative;
+			    width: 300px;
+			    height: 300px;
+			    margin: 0 auto;
+			}
+			.pointerAnim {
+			    will-change: transform;
+			    -webkit-transform-origin: 50% 100%;
+			    -ms-transform-origin: 50% 100%;
+			    transform-origin: 50% 100%;
+			    border-radius: 50% 50% 0 0 / 100% 100% 0 0;
+			    background-image: -webkit-linear-gradient(315deg, rgba(255, 255, 255, 0.8) 0%, rgba(0, 0, 0, 0.02) 70%, transparent 100%);
+			    background-image: linear-gradient(135deg, rgba(255, 255, 255, 0.8) 0%, rgba(0, 0, 0, 0.02) 70%, transparent 100%);
+			    -webkit-animation: rotate360 3s infinite linear;
+			    animation: rotate360 3s infinite linear;
+			}
+			.pointer {
+			    position: absolute;
+			    left: 0%;
+			    right: 0%;
+			    top: 0%;
+			    bottom: 50%;
+			}
+			.pointer:after {
+			    content: "";
+			    position: absolute;
+			    left: 0;
+			    width: 50%;
+			    bottom: -1px;
+			    border-top: 2px solid rgba(255, 255, 255, 0.8);
+			    box-shadow: 0 0 3px rgba(255, 255, 255, 0.6);
+			    border-radius: 9px;
+			    -webkit-animation: extend 1s linear;
+			    animation: extend 1s linear;
+			}
+		</style>
+	</head>
+	<body>
+	<div class="container">
+        <div id="load">
+            <div class="border1">
+                <div class="pointer"></div>
+            </div>
+        </div>
+    </div>
+    <script src="assets/js/jquery-2.1.1.min.js"></script>
+    <script>
+    	$(".pointer").addClass("pointerAnim");  //添加雷达旋转动画
+    </script>
+	</body>
+</html>

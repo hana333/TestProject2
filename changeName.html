@@ -1,0 +1,48 @@
+<style>
+	.labelInp{
+		width: 70%;
+	    height: 45px;
+	    margin: 0 auto;
+	}
+	.labelInp .Lab{
+		line-height: 45px;
+	    font-size: 15px;
+	    color: #555;
+	    margin-right: 15px;
+	}
+	.labelInp .Inp{
+		width: 220px;
+		height: 35px;
+	    padding-left: 5px;
+	}
+</style>
+
+<form id="changeName">
+	<!--<div class="labelInp">
+		<label class="Lab">原始名称</label>
+		<input type="text" class="Inp" name="name">
+	</div>-->
+	<div class="labelInp">
+		<label class="Lab">姓名</label>
+		<input type="text" class="Inp" name="changeName" >
+	</div>
+</form>
+
+<script type="text/javascript">
+
+//$("form#changeName").ajaxSubmit({
+//	type: 'post', // 提交方式 get/post
+//	url: 'changeName.html', // 需要提交的 url
+//	success: function(data) { // data 保存提交后返回的数据，一般为 json 数据
+//		console.log(10);
+//		if(data.type == "success") {
+//			$('#changeName').parents('.modal').modal('hide');
+//		} else {
+//			alert('提交失败');
+//		}
+//	},
+//	error: function(data) {
+//		console.log(11);
+//		alert('无反应');
+//	}
+//});

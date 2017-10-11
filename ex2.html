@@ -1,0 +1,25 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<form>
+			<input type="range" />
+			<input type="search"/>
+			<input type="text" autofocus="autofocus" />
+			<input type="text" required="required" />
+			<input type="text" required="required" />
+			<input type="text" pattren />
+			<button type="submit">提交</button>
+		</form>
+	</body>
+	<script src="assets/js/jquery-2.1.1.min.js"></script>
+	<script>
+		$('button').on('click',function(){
+			var val = $('form').find('input').val();
+			console.log(val);
+		});
+	</script>
+</html>

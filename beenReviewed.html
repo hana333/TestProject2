@@ -1,0 +1,556 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title>审核信息</title>
+		<link rel="shortcut icon" type="image/x-icon" href="logo_ico.ico"/>
+		<link rel="stylesheet" type="text/css" href="css/bootstrap.css"/>
+		<link href="css/review.css" style="text/css" rel="stylesheet">
+		<link href="css/main.css" style="text/css" rel="stylesheet">
+	</head>
+	<body>
+		<div class="wrap">
+			<!--<div class="nav">-->
+			<div class="nav_cont">
+				<div class="nav_top">
+					<div class="top_left">
+						<a href="index_2.html"><img src="img/gx-logo-n.png" /></a>
+					</div>
+					<div class="top_right">
+						<div class="phone">
+							<img src="img/gx-sa-n.png" />
+							<span>手机APP</span>
+							<div class="codeImg">
+								<img src="img/ct-ic-cd-nor.png" />
+							</div>
+						</div>
+						<div class="news">
+							<img src="img/ct-ic-xx-n.png"  />
+							<span>消息</span>
+						</div>
+						<!--<div class="dropdown user">-->
+						<div class="user">
+							<!--<div  data-toggle="dropdown" aria-expanded="false">-->
+							<div>
+								<img src="img/ct-ic-gx-n.png"  />
+								<span id="usname">&nbsp;</span>
+							</div>
+							<ul class="dropdown-menu" id="dropMenu">
+						            <li class="" id="review" class="active"><img src="img/gx-sh-n.png">&nbsp;审核信息</li>
+						            <li id="infoSelf"><img src="img/gx-pr-n.png">&nbsp;个人信息</li>
+					            <!-- <li><img src="img/gx-za-n.png">&nbsp;账户安全</li> -->
+					            <!-- <li><img src="img/gx-wr-n.png">&nbsp;我的认证</li> -->
+					            <li class="admin-out"><img src="img/gx-tc-n.png">&nbsp;退出</li>
+					        </ul>
+						</div>
+					</div>
+				</div>
+			</div>
+			<div class="content">
+				<div class="cont_left">
+					<div class="newsMenu">
+						<div class="newLeft">
+							<img src="img/ct-ic-tx-n.png" />
+						</div>
+						<div class="newright">
+							<p class="rigName">张老师</p>
+							<p><span>V</span>管理员</p>
+						</div>
+					</div>
+					<div class="listMenu">
+						<ul>
+							<li class="active"><span class="coin review active"></span>审核信息</li>
+							<li><span class="coin new"></span>数据概况</li>
+							<!-- <li><span class="coin set"></span>班群详情</li> -->
+						</ul>
+					</div>
+				</div>
+				
+				<div class="cont_right">
+					<div class="right_top">
+						<ul>
+							<li class="schRev active">学校审核
+								<!-- <span class="teacherNum">0</span> -->
+							</li>
+							<li>老师列表</li>
+						</ul>
+						<div class="rigNum">
+							共<span class="numT"></span>老师
+						</div>
+					</div>
+					<div class="right_cent">
+						<div class="tabOne">
+							<table id="revTabOne" cellpadding="0" cellspacing="0">
+								<thead>
+									<tr class="tabLi tabListOne">
+										<td width="150">姓名</td>
+										<td>电话</td>
+										<td width="100">操作</td>
+										<td width="100">操作</td>
+									</tr>
+								</thead>
+								<tbody>
+									<!--数据填充-->
+								</tbody>
+							</table>
+						</div>
+						<div class="tabTwo">
+							<table id="revTabTwo" cellpadding="0" cellspacing="0">
+								<thead>
+									<tr class="tabLi tabListTwo">
+										<td width="150">姓名</td>
+										<td>电话</td>
+										<td width="100">操作</td>
+										<td width="100">操作</td>
+									</tr>
+								</thead>
+								<tbody>
+									<!--数据填充-->
+								</tbody>
+							</table>
+						</div>
+						<div class="tabThree">
+							<table id="revtabThree" cellpadding="0" cellspacing="0">
+								<thead>
+									<tr class="tabLi tabListThree">
+										<td width="150">科目</td>
+										<td>作业标题</td>
+										<td>发布时间</td>
+										<td>截止时间</td>
+										<td>题数</td>
+										<td>完成情况</td>
+										<td>活跃度</td>
+										<td>未完成学生</td>
+										<td>已完成学生</td>
+										<td>批改数量</td>
+									</tr>
+								</thead>
+								<tbody>
+									<!--数据填充-->
+								</tbody>
+							</table>
+						</div>
+						<!-- 分页 -->
+						<div class="paging" style="display: block;"></div>
+					</div>
+				</div>
+				
+			</div>
+		</div>
+		<script src="js/jquery-2.1.1.min.js"></script>
+		<script src="js/bootstrap.min.js"></script>
+   		<script src="js/jquery.cookie.js" type="text/javascript" charset="utf-8"></script>
+		<script src="js/main.js"></script>
+		<script>
+			var heig = window.innerHeight;
+			$('.wrap').height(heig);
+			
+			$('.nav_top li,.right_top li').on('click',function(){
+				$(this).addClass('active').siblings().removeClass('active');
+			});
+			//切换学校审核，老师列表
+			$('.right_top li').on('click',function(){
+				var flag = $(this).hasClass('schRev');
+				if(flag){
+					$('.tabOne').show();
+					$('.tabTwo').hide();
+					teaInfo(1);
+				}else{
+					$('.tabOne').hide();
+					$('.tabTwo').show();
+					jiaocli(1);
+				}
+			});
+			$('.listMenu li').on('click',function(){
+				var coin =$(this).find('.coin'); 
+				$(this).addClass('active').siblings().removeClass('active');
+				coin.addClass('active');
+				coin.parents('.listMenu li').siblings().find('.coin').removeClass('active');
+			});
+			
+			//点击跳转审核页面
+			$('#review').on('click',function(){
+				window.location.href = "review.html";
+			})
+			//点击个人信息页面
+			$('#infoSelf').on('click',function(){
+				window.location.href = "infoSelf.html";
+			})
+
+			//个人信息查询
+			infoInquire();
+			function infoInquire(){
+				$.ajax({
+				    type:'post', 
+				    url:"../web/qb/userInfor",
+				    dataType: "json",
+				    async: false,
+				    success:function(res){
+				    	$('#usname,.rigName').html(res.data.name);
+				    	if(res.data.count > 0){
+				    		var cont ='<span class="teacherNum">'+res.data.count+'</span>';
+				    		$('.schRev').append(cont); 
+				    	}else{
+				    		$('.teacherNum').hide();				    		
+				    	}
+						$('.numT').html(res.data.count+"名");
+				    },
+				    error:function(res){}
+				});
+			}
+			//获取申请学校老师名称
+			var contS = '<tr text-align="center"><td colspan="4" style="border: 1px solid #dedede;">暂时无人需要审核</td></tr>';
+			var contT = '<tr text-align="center"><td colspan="4" style="border: 1px solid #dedede;">暂时无人需要移除</td></tr>';
+			teaInfo(1);
+			function teaInfo(page){
+				$.ajax({
+				    type:'post', 
+				    url:"../web/qb/queryAllRequest",
+				    dataType: "json",
+				    data:{
+				    	page:page,
+				    	pageSize:10
+				    },
+					success: function(res) {
+						var result = res.result;
+						var leng = parseInt(res.data.total);
+						$('.numT').html(leng+"名");
+						var tbodyOne = $("#revTabOne tbody");
+						if(result != 6){
+							var cont = '';
+							tbodyOne.empty();
+							for(var i=0;i<res.data.list.length;i++){
+								cont += '<tr data-val="'+res.data.list[i].recordId+'">\
+									<td>'+res.data.list[i].name+'</td>\
+									<td>'+res.data.list[i].phone+'</td>\
+									<td class="refuseT">不通过<span>∣</span></td>\
+									<td class="agreeT">通过</td>\
+									</tr>';
+							}
+							tbodyOne.append(cont);
+						}else{
+							tbodyOne.empty();
+							tbodyOne.append(contS);
+						}
+
+						getPage(res,page,1);	//分页
+						
+						$('.paging .XNum').keydown(function(event){
+							var num = $(this).val();
+							if(event.keyCode == 13){
+								if(num > 0 && num <= res.data.pages && !(/[^0-9]{1,}/.test(num))){
+									teaInfo(num);
+					    		}else{
+					    			$('.XNum').val("");
+					    		}
+							}
+						});
+					},
+					error:function(res){
+						
+					}
+				});
+
+			}		
+			$('#revTabOne').on('click','.agreeT',function(){
+				var This =$(this);
+				var recordId = This.parents('tr').data('val');
+				//同意
+				var opId = 1;
+				$.ajax({
+				    type:'post', 
+				    url:"../web/qb/updateRequest",
+				    data:{
+				    	recordId:recordId,
+				    	op:opId
+				    },
+					success: function(res) {
+						This.parent('tr[data-val="'+recordId+'"]').remove();
+						var leng = $('#revTabOne tbody').find('tr').length;
+						if(leng <= 0){
+							$('#revTabOne tbody').append(contS);
+						}
+						infoInquire();
+					},
+					error:function(data){
+						var cont = data.msg; 
+					    newPrompt(cont);
+					}
+				});
+			});	
+			$('#revTabOne').on('click','.refuseT',function(){		
+				var This =$(this);
+				var recordId = This.parents('tr').data('val');		
+				//拒绝
+				var opId = 2;
+				$.ajax({
+				    type:'post', 
+				    url:"../web/qb/updateRequest",
+				    data:{
+				    	recordId:recordId,
+				    	op:opId
+				    },
+					success: function(res) { 
+						This.parent('tr[data-val="'+recordId+'"]').remove();
+						infoInquire();
+					},
+					error:function(data){
+						var cont = data.msg; 
+					    newPrompt(cont);
+					}
+				});
+			});
+
+			function jiaocli(page){
+				//获取学校老师名称
+				$.ajax({
+				    type:'post', 
+				    url:"../web/qb/queryGroupList",
+				    dataType: "json",
+				    data:{
+				    	page:page,
+				    	pageSize:10
+				    },
+					success: function(res) {
+						var result = res.result;
+						var leng = parseInt(res.data.total);
+						$('.numT').html(leng+"名");
+						if(result != 6){
+							var cont = '';
+							$("#revTabTwo tbody").empty();
+							for(var i=0;i<res.data.list.length;i++){
+								cont += '<tr data-val="'+res.data.list[i].recordId+'" data-id="'+res.data.list[i].roleType+'">\
+									<td>'+res.data.list[i].name+'</td>\
+									<td>'+res.data.list[i].phone+'</td>\
+									<td class="remove tabRemove">移除<span>∣</span></td>\
+									<td class="admin">任命管理员</td>\
+									</tr>';
+							}
+							$("#revTabTwo tbody").append(cont);
+							//判断是否为管理员
+							var twoTr = $('#revTabTwo tbody tr');
+							$(twoTr).each(function(i,e){
+								var id = $(this).data('id');
+								if(id == 20){
+									$(this).find('.admin').removeClass('tabAdmin').addClass('removeAdmin').text('取消管理员');
+									$(this).find('.remove').removeClass('tabRemove').css('color','#ddd');
+								}else if(id == 30){
+									$(this).find('.admin').removeClass('removeAdmin').addClass('tabAdmin').text('任命管理员');
+								}								
+							});
+						}else{
+							$("#revTabTwo tbody").empty();
+							$("#revTabTwo tbody").append(contT);
+						}
+						
+						getPage(res,page,2);	//分页
+						
+						$('.paging .XNum').keydown(function(event){
+							var num = $(this).val();
+							if(event.keyCode == 13){
+								if(num > 0 && num <= res.data.pages && !(/[^0-9]{1,}/.test(num))){
+									jiaocli(num);
+					    		}else{
+					    			$('.XNum').val("");
+					    		}
+							}
+						});
+					},
+					error:function(data){
+						var cont = data.msg; 
+					    newPrompt(cont);
+					}
+				});	
+			}
+			
+			$('#revTabTwo').on('click','.tabRemove',function(){
+				var This =$(this);
+				var recordId = This.parents('tr').data('val');
+				console.log($(this).length);
+				//移除
+				$.msgBox({
+					title:'确认移除',
+					content:'确认移除',
+					onOk:function(){
+						$.ajax({
+						    type:'post', 
+						    url:"../web/qb/removeMember",
+						    data:{
+						    	recordId:recordId
+						    },
+							success: function(res){
+								This.parents('tr[data-val="'+recordId+'"]').remove();
+							},
+							error:function(data){
+								var cont = data.msg; 
+							    newPrompt(cont);
+							}
+						});
+					}
+				});
+			});
+
+			var len = $('#revTabTwo tbody tr').length;
+			if(len <= 0){
+				$('#revTabTwo tbody').empty();
+				$('#revTabTwo tbody').append(contT);
+			}
+			//gerennew();
+		
+			//任命管理员
+			$('#revTabTwo').on('click','.tabAdmin',function(){
+				var thisP = $(this).parents('tr');
+				var val = thisP.data('val');
+				$.ajax({
+				    type:'post', 
+				    url:"../web/qb/changeRoleType",
+				    data:{
+				    	recordId:val,
+				    	roleType:20
+				    },
+					success: function(res) {
+						thisP.find('.admin').removeClass('tabAdmin').addClass('removeAdmin').text('取消管理员');
+						thisP.find('.remove').removeClass('tabRemove').css('color','#ddd');
+					},
+					error:function(res){
+						console.log(res.msg);
+					}
+				});
+			});
+
+			//取消管理员
+			$('#revTabTwo').on('click','.removeAdmin',function(){
+				var thisP = $(this).parents('tr');
+				var val = thisP.data('val');
+				$.ajax({
+				    type:'post', 
+				    url:"../web/qb/changeRoleType",
+				    data:{
+				    	recordId:val,
+				    	roleType:30
+				    },
+					success: function(res) {
+						thisP.find('.admin').removeClass('removeAdmin').addClass('tabAdmin').text('任命管理员');
+						thisP.find('.remove').addClass('tabRemove').css('color','#333');
+					},
+					error:function(res){
+						console.log(res.msg);						
+					}
+				});
+			});			
+
+
+			//分页
+			function getPage(res,page,val){
+				//分页处理
+				if(res.data.pages>1){
+			    			$('.paging').empty();
+				    		$('.paging').show()
+				    		var pg = '<div class="pag pag-prev">〈</div>\
+								<div class="pag-inn"></div><div class="pag pag-next">〉</div>\
+								<div class="jumpNum">前往<input class="XNum" type="text">页</div>'
+							$('.paging').append(pg);
+				    		var pag = '';
+				    		//第一页
+				    		if(res.data.pages>3&&page==1){
+				    			$('.pag-inn').width(90);
+				    			for(var i = 1;i<6;i++){
+				    				pag += '<span class="pag-ab">'+i+'</span>'
+				    			}
+				    		}else if(res.data.pages<=3&&page==1){
+				    			$('.pag-inn').width(30*res.data.pages)
+				    			for(var i = 1;i<res.data.pages+1;i++){
+				    				pag += '<span class="pag-ab">'+i+'</span>'
+				    			}
+				    		}
+				    		//第二页
+				    		if(res.data.pages>3&&page==2){
+				    			$('.pag-inn').width(90);
+				    			for(var i = 1;i<6;i++){
+				    				pag += '<span class="pag-ab">'+i+'</span>'
+				    			}
+				    		}else if(res.data.pages<=3&&page==2){
+				    			$('.pag-inn').width(30*res.data.pages);
+				    			for(var i = 1;i<res.data.pages+1;i++){
+				    				pag += '<span class="pag-ab">'+i+'</span>'
+				    			}
+				    		}
+				    		//第二页往上
+				    		else if(res.data.pages<=3&&page>2){
+				    			$('.pag-inn').width(30*res.data.pages);
+			    				for(var i = 1;i<=res.data.pages;i++){
+				    				pag += '<span class="pag-ab">'+i+'</span>'
+				    			}
+				    		}
+				    		else if(res.data.pages>3&&page>2&&res.data.pages-page+1>=3){
+				    			$('.pag-inn').width(90);
+			    				for(var i = page-1;i<page*1+4;i++){
+				    				pag += '<span class="pag-ab">'+i+'</span>'
+				    			}
+				    		}else if(res.data.pages>3&&page>2&&res.data.pages-page<3){
+				    			$('.pag-inn').width(90);
+				    			for(var i =res.data.pages-4;i<=res.data.pages;i++){
+				    				pag += '<span class="pag-ab">'+i+'</span>'
+				    			}
+				    		}
+				    		$('.pag-inn').append(pag)	
+				    		if(page==1){
+				    			$('.pag-ab').eq(0).css({"background":"#00adf5","color":"#fff"});
+				    			$('.pag-ab').eq(0).addClass('pag_on');
+				    		}else if(res.data.pages>3&&page>1&&res.data.pages-page+1>=3||page==2){
+				    		
+				    			$('.pag-ab').eq(1).css({"background":"#00adf5","color":"#fff"});
+				    			$('.pag-ab').eq(1).addClass('pag_on');
+				    		}else{
+				    			$('.pag-ab').eq(res.data.pageNum-res.data.pages+2).css({"background":"#00adf5","color":"#fff"});
+				    			$('.pag-ab').eq(res.data.pageNum-res.data.pages+2).addClass('pag_on');
+				    		}
+				    	}else{
+				    		$('.paging').hide();				    		
+				    	}
+						//点击某一页
+				    	$('.pag-ab').click(function(){
+				    		jiaocli($(this).html());
+				    	})
+				    	//上一页下一页				    	
+				    	if(res.data.hasPreviousPage){
+				    		$('.pag-prev').unbind('click');
+				    		$('.pag-prev').click(function(){
+				    			jiaocli(page*1-1);
+				    		})
+				    	}
+				    	if(res.data.hasNextPage){
+				    		$('.pag-next').unbind('click');
+				    		$('.pag-next').click(function(){
+				    			jiaocli(page*1+1);
+				    		})
+				    	}
+				function topage(page){
+					if(val == 1){
+						getPage(page);
+					}else if(val == 2){
+						jiaocli(page);
+					}else if(val == 3){
+						getPer(page);
+					}
+				}
+			}
+
+			
+			//退出提示
+			$('.admin-out').on('click',function(){
+				$.msgBox({
+					title:'是否退出',	
+					content:'是否退出',
+					onOk:function(){
+						$.removeCookie('Miz-seven' ,'', { expires: -1 });
+						$.removeCookie('Miz-holdings', '', { expires: -1 });
+						$.removeCookie('Miz-holdings-psd', '', { expires: -1 });
+						$.removeCookie('Miz-one', '', { expires: -1 });
+						self.location='login.html';
+					}
+				});
+			});
+		</script>
+	</body>
+</html>

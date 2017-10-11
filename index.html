@@ -1,0 +1,322 @@
+<!doctype html>
+<html>
+<head>
+<meta charset="utf-8">
+<title>框架重构</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0" />
+<link rel="stylesheet" href="assets/css/bootstrap.css" />
+<link rel="stylesheet" href="assets/css/font-awesome.css" />
+<link rel="stylesheet" href="assets/css/ace.css" class="ace-main-stylesheet" id="main-ace-style" />
+<link rel="stylesheet" href="assets/css/jquery-ui.css" />
+<link rel="stylesheet" href="assets/iconfont/iconfont.css" />
+<link rel="stylesheet" href="assets/css/main.css" />
+</head>
+
+<body class="no-skin">
+  	<!--顶部nav-->
+    <div id="navbar" class="navbar navbar-default">
+    	<div class="bench-left"></div>
+        <div class="navbar-container bench-tcen" id="navbar-container">
+            <button type="button" class="navbar-toggle menu-toggler pull-left" id="menu-toggler" data-target="#sidebar">
+                <span class="sr-only">Toggle sidebar</span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+                <span class="icon-bar"></span>
+            </button>
+            <div class="navbar-header pull-left">
+                <ul class="nav ace-nav head_nav">
+                    <li class="light-blue">
+                    	<a class="homeUrl" href="#temp.html">
+                    		<div class="name">
+			                	<span class="name-logo"></span>
+			                	<img class="name-img" src="assets/img/logo2.png" alt="logo"/>
+			                </div>
+                    	</a>
+                    </li>
+                </ul>
+            </div>
+           <!--年级选择-->
+			<div id="changeNew">
+				<span id="gradeName">
+					年级：一年级
+					</span>
+				<span class="youjiantou"></span>
+				<span id="subjectName">
+					学科：历史
+				</span>
+				<span class="youjiantou"></span>
+				<span id="jiaocaiName">
+					教材：人教版
+				</span>
+				<span class="updajian"></span>
+			</div>
+            <div class="navbar-buttons navbar-header pull-right" role="navigation">
+            	<ul class="nav ace-nav">
+                    <li class="light-blue" style="margin-right: 50px;">
+                        <a data-toggle="dropdown" class="dropdown-toggle" href="#" aria-expanded="false">
+                            <!--<i class="ace-icon fa fa-bell"></i>消息-->
+                            <!--<span class="badge badge-important">8</span>-->
+                            <div class="news">
+	                            <i class="aali miz-news"></i>
+								消息
+								<div class="miz-new-num">1</div>                            	
+                            </div>
+                        </a>  
+                        <!--消息弹出框-->
+                        <ul class="dropdown-menu-right dropdown-navbar navbar-pink dropdown-menu dropdown-caret dropdown-close">
+                            <li class="dropdown-header">
+                                <i class="ace-icon fa fa-exclamation-triangle"></i>
+                                8条提醒信息
+                            </li>
+                            <li class="dropdown-content ace-scroll" style="position: relative;">
+                                <div class="scroll-track" style="display: none;">
+                                    <div class="scroll-bar"></div>
+                                </div>
+                                <div class="scroll-content">
+                                  <ul class="dropdown-menu dropdown-navbar navbar-pink">
+                                    提醒列表开始
+                                    <li>
+                                        <a href="#">
+                                            <i class="btn btn-xs btn-primary fa fa-user"></i>
+                                            Bob just signed up as an editor ...
+                                        </a>
+                                    </li>									
+                                    提醒列表结束
+                                  </ul>
+                                </div>
+                            </li>
+                            <li class="dropdown-footer">
+                                <a href="#">
+                                    	更多提醒
+                                    <i class="ace-icon fa fa-arrow-right"></i>
+                                </a>
+                            </li>
+                        </ul>
+                    </li> 
+                    <li class="light-blue">
+                        <a data-toggle="dropdown" href="#" class="dropdown-toggle" aria-expanded="false">
+                            <!--<img class="nav-user-photo" src="assets/avatars/user.jpg" alt="Jason's Photo">
+                            <span class="user-info">
+                                <small>欢迎您</small>
+                                admin
+                            </span>                            -->
+                            <span class="user-info user-drop">
+                            	<i class="aali ple"></i>米猪控股
+                            </span>
+                            <i class="ace-icon fa fa-caret-down"></i>
+                        </a>                        
+                        <ul class="user-menu dropdown-menu-right dropdown-menu dropdown-yellow dropdown-caret dropdown-close" id="top-menu">
+                            <!--<li><a href="#"><i class="ace-icon fa fa-user"></i>修改名字</a></li>                            
+                            <li><a href="#"><i class="ace-icon fa fa-cog"></i>修改密码</a></li>                            
+                            <li class="#"></li>                            
+                            <li><a href="#"><i class="ace-icon fa fa-power-off"></i>退出</a></li>-->
+                            <li class="admin-name">
+				            	<div class="admin-img"></div>
+				            	<p class="admin-user">945921978@qq.com</p>
+				            </li>
+				            <li class="changeName"><a href="#"><i class="aali liname"></i>修改名字</a></li>
+				            <li class="changePassword"><a href="#"><i class="aali lipass"></i>修改密码</a></li>
+				            <li class="admin-out"><a href="#"><i class="aali liout"></i>退出</a></li>
+                        </ul>
+                    </li>
+            	</ul>
+            </div>            
+			<!--搜索框-->
+			<div class="seek">
+				<input type="text" id="seek" placeholder="标题、描述、学科、题型" />
+				<i class="aali hunt"></i>
+			</div>
+        </div>
+    </div>
+    
+	<div class="main-container" id="main-container">
+		<div class="wrapper-inner">
+			<!--左侧菜单层-->
+	        <div id="sidebar" class="sidebar responsive">
+	           <!--头像-->
+				<div class="project-img relative" id="project-img">
+					<p class="pro-img">
+						<img src="" id="projectImg" border="0" />
+					</p>
+					<span class="setProjectBtn" alt="设置" title="设置" style="display: inline-block;">
+						<i class="setting" style="font-size: 26px;"></i>	
+					</span>
+				</div>	
+	            <!--<div class="sidebar-toggle sidebar-collapse" id="sidebar-collapse">
+	            	<i class="ace-icon fa fa-reorder (alias) fa-rotate-90" data-icon1="ace-icon fa fa-reorder (alias) fa-rotate-90" data-icon2="ace-icon fa fa-reorder (alias)"></i>
+	            </div>-->
+	            <ul class="nav nav-list side-ul" >
+	                <li	class="cnList">
+	                    <a href="javascript:" class="dropdown-toggle hotnav">
+	                        <b class="aali quest"></b>
+	                        <span class="menu-text">个人收藏</span>
+	                        <b class="li-right"></b>
+	                    </a>
+	                    <ul class="submenu" style="display: none;">
+	                        <li class="">
+	                            <a href="page1.html" class="oneid">
+	                                <i class="aali nav_bao"></i>
+	                                <span>默认题库</span>
+	                                <i class="nav_san"></i>
+	                            </a>
+	                            <!--三级菜单
+	                            <div class="three_cd hide">
+	                                <ul class="nav nav-list">
+	                                    <li class="">
+	                                        <a href="page1.html" class="twoid" >
+	                                       	 <span>三级菜单</span>
+	                                        </a>
+	                                    </li>                                
+	                                </ul>
+	                            </div>-->                           
+	                        </li>
+	                        <li class="">
+	                            <a href="page2.html" class="oneid">
+	                                <i class="aali nav_bao"></i>
+	                                <span>二级二级</span>
+	                                <i class="nav_san"></i>
+	                            </a>
+	                        </li>
+	                    </ul>
+	                </li>
+	                <li	class="cnList">
+	                    <a href="javascript:" class="dropdown-toggle hotnav">
+	                        <!--<i class="menu-icon fa fa-caret-right"></i>-->
+	                        <b class="aali quest"></b>
+	                        <span class="menu-text">公共题库</span>
+	                        <b class="li-right"></b>
+	                    </a>
+	                    <ul class="submenu" style="display: none;">
+	                        <li class="">
+	                            <a href="#" class="oneid">
+	                                <i class="aali nav_bao"></i>
+	                                <span>默认题库</span>
+	                                <i class="nav_san"></i>
+	                            </a>
+	                        </li>                
+	                    </ul>
+	                </li>
+	                <li	class="cnList">
+	                    <a href="javascript:" class="dropdown-toggle hotnav">
+	                        <!--<i class="menu-icon fa fa-caret-right"></i>-->
+	                        <b class="aali quest"></b>
+	                        <span class="menu-text">个人题库</span>
+	                        <b class="li-right"></b>
+	                    </a>
+	                </li>
+	            </ul>
+	            <span class="statement">
+	            	<i class="fa fa-copyright"></i>
+	                	米猪控股  版权所有
+	            </span>
+	        </div>
+	        <!--右侧内容层-->
+	        <div class="main-content">
+	            <div id="sidebar1" class="three-sidebar dil">
+	                <!-- 收缩框 -->
+	                <div class="float_icon  min_float_icon hide" title="close" id="ssk">
+	                    <div class="float_icon_bg"></div>
+	                    <i class="ace-icon fa fa-outdent"></i>
+	                </div>
+	                <div class="three-top"><!-- 第三级菜单标题--></div>
+	                <div class="three_cdg"><!-- 第三级菜单列表区域--></div>		
+	            </div>
+	            <div class="body_main">
+	            	<div class="body_main_top"><!--页面标题---></div>
+	           		<div id="mainframe"></div>
+	            </div>        
+	        </div>
+        </div>
+   	</div>
+</body>
+<script type="text/javascript" src="assets/js/jquery-2.1.1.min.js"></script>
+<!--<script type="text/javascript" src="assets/js/jquery-ui.js"></script>-->
+<script type="text/javascript" src="assets/js/jquery.cookie.js"></script>
+<script type="text/javascript" src="assets/js/WebSocket.js"></script>
+<script type="text/javascript" src="assets/js/bootstrap.js"></script>
+<script type="text/javascript" src="assets/js/main.js"></script>
+<script type="text/javascript" src="assets/js/draggabilly.pkgd.min.js"></script>
+<script type="text/javascript">
+//(function($) {
+//	$(window).on("load", function() {
+//		$(".sidebar-collapse").mCustomScrollbar({
+//			theme: "minimal"
+//		});
+//		$(".inner-auto").mCustomScrollbar({
+//			theme: "minimal"
+//		});
+//
+//	});
+//})(jQuery);
+
+//修改名字
+$('.changeName').on('click', function() {
+	$.MyModal({
+		title: '修改名称',
+		Name: 'changeName',
+		content: 'changeName.html',
+		width: "500px",
+		footer: true,
+		onFinsh: function() {
+
+		}
+	});
+});
+
+//修改密码
+$('.changePassword').on('click', function() {
+	$.MyModal({
+		title: '修改密码',
+		Name: 'changePassword',
+		content: 'changePassword.html',
+		width: "500px",
+		footer: true,
+		onOk:function(){
+			$("form#changePassword").ajax({
+				type: 'post', // 提交方式 get/post
+				url: 'changePassword.html', // 需要提交的 url
+				success: function(data) { // data 保存提交后返回的数据，一般为 json 数据
+					console.log(10);
+					if(data.type == "success") {
+						$('#changePassword').parents('.modal').modal('hide');
+					} else {
+						alert('提交失败');
+					}
+				},
+				error: function(data) {
+					console.log(11);
+				}
+			});
+		},
+		onFinsh: function() {
+
+		}
+	});
+});
+
+//退出
+$('.admin-out').on('click', function() {
+	$.msgBox({
+		title: "退出",
+		content: "确认退出登录?",
+		onOk: function() {
+
+		}
+	});
+});
+
+//更换校徽
+$('.setProjectBtn').on('click', function() {
+	$.MyModal({
+		title: '更换校徽',
+		Name: 'changeBadge',
+		content: 'changeBadge.html',
+		//					width:"263px",
+		footer: false,
+		onFinsh: function() {
+
+		}
+	});
+});
+</script>
+</html>

@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+		<style>
+			.dChoose{
+				width: 880px;
+				height: 420px;
+			    margin: 100px auto 0 auto;
+    			border: 1px solid #ddd;
+			}
+			#dContent{
+				height: 100%;				
+			}
+		</style>
+	</head>
+	<body>
+		<div class="dChoose">
+			<div id="dContent" class="dContent" data-id="1"></div>
+		</div>
+	</body>
+	
+	<script src="assets/js/jquery-2.1.1.min.js"></script>
+	<script src="assets/js/echarts.min.js"></script>
+	<script>
+		var winWidth=$(window).width();
+		var resizeWorldMapContainer = function () {
+			$('#dContent').width(880);
+		};
+		
+		var oneChart = echarts.init(document.getElementById('dContent'));
+		//myChart.showLoading();
+		//$.getJSON('data/asset/data/npmdepgraph.min10.json', function (json) {
+	    oneChart.hideLoading();
+	    oneChart.setOption(option = {
+	        title: {
+	            text: 'NPM Dependencies'
+	        },
+	        animationDurationUpdate: 1500,
+	        animationEasingUpdate: 'quinticInOut',
+	        series : [
+	            {
+	               type: 'graph',
+	               layout: 'none',
+	               //progressiveThreshold: 700,
+	               data: [{
+					    name: '英语占比1',
+					    x: 0,
+					    y: 10,
+					    value: 300,
+					    symbolSize: 100
+					    /*symbolSize: {
+				    		value:300,params:120
+				    	}*/
+					}, {
+					    name: '数学占比2',
+					    x: 20,
+					    y: 30,
+					    value: 200,
+					    symbolSize: 50,
+					    itemStyle: {
+					        normal: {
+					            color: 'red'
+					        }
+					    }
+					},{
+						name:'语文占比3',
+						x:180,
+						y:50,
+						value:500,
+					    symbolSize: 200
+					}
+	               ],
+	               links: [{
+		                source: 0,
+		                target: 1,
+		                symbolSize: [5, 20],
+		                label: {
+		                    normal: {
+		                        show: true
+		                    }
+		                },
+		                lineStyle: {
+		                    normal: {
+		                        width: 5,
+		                        curveness: 0.2
+		                    }
+		                }
+		            }/*, {
+		                source: '数学占比2',
+		                target: '英语占比1',
+		                label: {
+		                    normal: {
+		                        show: true
+		                    }
+		                },
+		                lineStyle: {
+		                    normal: { curveness: 0.2 }
+		                }
+		            }*/, {
+		                source: '英语占比1',
+		                target: '语文占比3'
+		            }, {
+		                source: '数学占比2',
+		                target: '语文占比3'
+		            }, {
+		                source: '英语占比1',
+		                target: '语文占比3'
+		            }],
+	                /*links: [{		//1
+					    source: 'n1',
+					    target: 'n2',
+					    lineStyle:{
+					    	normal:{
+					    		color:'rgb(128, 128, 128)',
+					    		type:'solid',
+					    	}
+					    }
+					}, {
+					    source: 'n2',
+					    target: 'n3',
+					    lineStyle:{
+					    	normal:{
+					    		color:'rgb(128, 128, 128)',
+					    		type:'solid',
+					    	}
+					    }
+					}, {
+					    source: 'n3',
+					    target: 'n4',
+					    lineStyle:{
+					    	normal:{
+					    		color:'rgb(128, 128, 128)',
+					    		type:'solid',
+					    	}
+					    }
+					}],*/
+					/*links: [{		//2
+						effect: {
+	                         show: true,
+	                         period: 6,
+	                         trailLength: 0.7,
+	                         color: '#fff',
+	                         symbolSize: 3
+	                    }
+					}],*/
+	                label: {
+	                    /*emphasis: {
+	                        position: 'left',
+	                        show: true
+	                    },*/
+	                    normal: {
+	                        position: 'right',
+	                        formatter: '{b}'
+	                    }
+	                },
+	                markLine:{
+	                	data:{
+						    xAxis: {
+						        type: 'category',
+						        data: ['5', '6', '9', '13', '19', '33']
+						        // 注意这里不建议写成 [5, 6, 9, 13, 19, 33]，否则不能被 markPoint / markLine 用『具体值』索引到。
+						    },
+						    series: {
+						        type: 'line',
+						        data: [11, 22, 33, 44, 55, 66],
+						        markPoint: { // markLine 也是同理
+						            data: [{
+						                coord: [5, 33.4], // 其中 5 表示 xAxis.data[5]，即 '33' 这个元素。
+						                // coord: ['5', 33.4] // 其中 '5' 表示 xAxis.data中的 '5' 这个元素。
+						                                      // 注意，使用这种方式时，xAxis.data 不能写成 [number, number, ...]
+						                                      // 而只能写成 [string, string, ...]
+						            }]
+						        }
+						    }
+						}
+						/*data: [
+						    {
+						        name: '平均线',
+						        // 支持 'average', 'min', 'max'
+						        type: 'average'
+						    },
+						    {
+						        name: 'Y 轴值为 100 的水平线',
+						        yAxis: 100
+						    },
+						    [
+						        {
+						            // 起点和终点的项会共用一个 name
+						            name: '最小值到最大值',
+						            type: 'min'
+						        },
+						        {
+						            type: 'max'
+						        }
+						    ],
+						    [
+						        {
+						            name: '两个坐标之间的标线',
+						            coord: [10, 20]
+						        },
+						        {
+						            coord: [20, 30]
+						        }
+						    ], [{
+						        // 固定起点的 x 像素位置，用于模拟一条指向最大值的水平线
+						        yAxis: 'max',
+						        x: '90%'
+						    }, {
+						        type: 'max'
+						    }],
+						    [
+						        {
+						            name: '两个屏幕坐标之间的标线',
+						            x: 100,
+						            y: 100
+						        },
+						        {
+						            x: 500,
+						            y: 200
+						        }
+						    ]
+						]*/
+	                },
+	                roam: true,
+	                focusNodeAdjacency: true,
+	                lineStyle: {
+	                    normal: {
+	                        width: 0.5,
+	                        curveness: 0.3,		//曲线，弧度
+	                        opacity: 0.7
+	                    }
+	                }
+	            }
+	        ]
+	    }, true);
+		//});
+	</script>
+</html>

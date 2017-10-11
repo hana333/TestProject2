@@ -1,0 +1,24 @@
+<!DOCTYPE html>
+<html>
+	<head>
+		<meta charset="UTF-8">
+		<title></title>
+	</head>
+	<body>
+		<p class="ptext">ABCDEFGHIJKLMNOPQRSTUVWXYZ01234567890</p>
+	</body>
+	<script src="assets/js/jquery-2.1.1.min.js"></script>
+	<script>
+		var s = $('.ptext').text();
+		function f(s, width){
+		  return s.replace(
+		  new RegExp('[\\s\\S]{1,'+(width || 4)+'}', 'g'),
+		  function(m){
+		    return '.' + new Array(m.length).join(' ');
+		  });
+		}
+		f(s, 4);
+		console.log(s);
+		console.log(f(s, 4));
+	</script>
+</html>

@@ -1,0 +1,39 @@
+<div class="amend">
+	<div class="amend-inner">
+		<div class="amend-head">
+			<div class="amend-img">
+				<div class="amend-drag">
+					<div class="image_container">
+						<img class="drag-img" id="ImgPr" src="assets/img/wj-n.png">
+					</div>
+					<p class="drag-p">拖拽文件或点击按钮上传文件</p>
+					<form id='formFile' enctype="multipart/form-data">
+						<a class="change-img imgtxt" href="#">选择图片
+							<input id="file_upload" type="file" value="选择图片" />
+						</a>
+						<input id="subjection" type="text" name="subjection" value="" class='hide' />
+					</form>
+				</div>
+				<div class="now-img">
+					<p style="font-size: 16px;">当前头像</p>
+					<div class="now-img-in image_container">
+						<img class="img-now" id="ImgPr" src="assets/img/ct-ic-tx-n.png" />
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+</div>
+
+<script type="text/javascript" src="webuploader/webuploader.js"></script>
+<script type="text/javascript" src="webuploader/upload.js"></script>
+<script>
+$(function() {
+//	$("#file_upload").uploadPreview({
+//		Img: "ImgPr",
+//		Width: 200,
+//		Height: 200
+//	});
+//	$('#formFile').reset();
+});
+</script>
